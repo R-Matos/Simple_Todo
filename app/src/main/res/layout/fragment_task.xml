@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:orientation="vertical">
+
+        <!--Title Start-->
+        <TextView
+            style="?android:listSeparatorTextViewStyle"
+            android:text="@string/task_label_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <EditText
+            android:id="@+id/task_title"
+            android:hint="@string/task_hint_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <!--Title End-->
+
+        <!--Notes Start-->
+        <TextView
+            style="?android:listSeparatorTextViewStyle"
+            android:text="@string/task_label_notes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <EditText
+            android:id="@+id/task_notes"
+            android:hint="@string/task_hint_notes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:ems="10"/>
+        <!--Notes End-->
+
+        <!--DueDate Start-->
+        <TextView
+            style="?android:listSeparatorTextViewStyle"
+            android:text="@string/task_label_duedate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/task_dueDate"
+            android:hint="@string/task_hint_duedate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <!--DueDate End-->
+
+        <!--DueTime Start (visibility gone until dueDate is set)-->
+        <TextView
+            android:id="@+id/task_dueTime"
+            android:hint="Select due time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <!--DueTime End-->
+
+        <!--Reminders Start-->
+        <TextView
+            style="?android:listSeparatorTextViewStyle"
+            android:text="@string/task_label_reminders"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:id="@+id/task_linear_reminder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Date -->
+            <TextView
+                android:id="@+id/task_reminder_date"
+                android:hint="@string/task_reminder_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!-- Time -->
+            <TextView
+                android:id="@+id/task_reminder_time"
+                android:hint="Select time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!-- Alarm/Notification -->
+            <ImageView
+                android:id="@+id/task_reminder_type"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+        <!--Reminders End-->
+
+
+
+
+
+
+
+
+    </LinearLayout>
+
+
+</ScrollView>

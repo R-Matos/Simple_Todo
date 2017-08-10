@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Simple Todo</string>
+    <string name="task_label_title">Title</string>
+    <string name="task_hint_title">Enter a title for the task</string>
+    <string name="task_label_notes">Notes</string>
+    <string name="task_label_duedate">Due Date</string>
+    <string name="task_hint_notes">Enter notes for the task</string>
+    <string name="task_hint_duedate">Select due date</string>
+    <string name="task_label_duetime">Due Time</string>
+    <string name="task_label_reminders">Reminders</string>
+    <string name="task_reminder_date">Select date</string>
+    <string name="list_menu_new_task">New Task</string>
+    <string name="list_menu_enable_counter">Enable counter</string>
+    <string name="list_subtitle_task_count">%1$d tasks</string>
+    <string name="list_menu_disable_counter">Disable counter</string>
+</resources>
