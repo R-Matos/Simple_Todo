@@ -31,7 +31,7 @@
 
             <receiver
                 android:process=":remote"
-                android:name="AlarmReceiver"
+                android:name=".AlarmReceiver"
                 android:enabled="true"
                 android:exported="true"/>
         </activity>
