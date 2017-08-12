@@ -27,10 +27,12 @@ public class TaskCursorWrapper extends CursorWrapper {
         long dueDateLong = getLong(getColumnIndex(TaskTable.Cols.DUE_DATE));
         String reminderTypeString = getString(getColumnIndex(TaskTable.Cols.REMINDER_TYPE));
         long lastEditedLong = getLong(getColumnIndex(TaskTable.Cols.LAST_EDITED));
+        long reminderLong = getLong(getColumnIndex(TaskTable.Cols.REMINDER_DATE));
 
         UUID uuid = UUID.fromString(uuidString);
         Date dueDate = (dueDateLong == 0) ? null : new Date(dueDateLong);
         Date lastEdited = (lastEditedLong == 0) ? null : new Date(lastEditedLong);
+        Date reminder = (reminderLong == 0) ? null : new Date(reminderLong);
         Task.ReminderType reminderType = Task.ReminderType.NONE;
         if (reminderTypeString.equalsIgnoreCase("none")) {
             reminderType = Task.ReminderType.NONE;
@@ -48,6 +50,7 @@ public class TaskCursorWrapper extends CursorWrapper {
         task.setDueDate(dueDate);
         task.setLastEditted(lastEdited);
         task.setReminderType(reminderType);
+        task.setReminder(reminder);
 
         return task;
     }

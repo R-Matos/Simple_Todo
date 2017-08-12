@@ -16,7 +16,7 @@ public class TaskDbSchema {
             public static final String NOTE = "note";
             public static final String DUE_DATE = "due_date";
             public static final String REMINDER_TYPE = "reminder_type";
-            public static final String ALARMS = "alarms";
+            public static final String REMINDER_DATE = "reminder";
             public static final String LAST_EDITED = "last_edited";
         }
 

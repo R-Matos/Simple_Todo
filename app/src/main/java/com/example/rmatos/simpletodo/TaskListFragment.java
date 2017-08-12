@@ -90,8 +90,6 @@ public class TaskListFragment extends Fragment {
     }
 
     //Handles menu events
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -102,6 +100,7 @@ public class TaskListFragment extends Fragment {
                 startActivity(intent);
                 return true;
             case R.id.list_menu_show_count:
+                mSubtitleVisible = (!mSubtitleVisible);
                 updateSubtitle();
                 return true;
             default:
@@ -155,6 +154,8 @@ public class TaskListFragment extends Fragment {
      * Viewholder
      */
     private class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private final int NOTE_LIMIT = 30;
+
         private Task mTask;
 
         private TextView mTitleTextView;
@@ -183,7 +184,8 @@ public class TaskListFragment extends Fragment {
             mTitleTextView.setText(task.getTitle());
             if (mTask.getNote() != null) {
                 mNoteTextView.setVisibility(View.VISIBLE);
-                mNoteTextView.setText(task.getNote());
+                mNoteTextView.setText((task.getNote().length() > NOTE_LIMIT) ?
+                        task.getNote().substring(0,NOTE_LIMIT) : task.getNote());
             } else {
                 mNoteTextView.setVisibility(View.INVISIBLE);
             }
@@ -193,11 +195,11 @@ public class TaskListFragment extends Fragment {
             } else {
                 mDueDateTextView.setVisibility(View.INVISIBLE);
             }
-            if (!mTask.getAlarms().isEmpty()) {
+            if (mTask.getReminder() != null) {
                 mReminderDateTextView.setVisibility(View.VISIBLE);
                 mReminderTimeTextView.setVisibility(View.VISIBLE);
-                mReminderDateTextView.setText(dateFormat.format("EEE, dd MMM yyyy", mTask.getAlarms().get(0)));
-                mReminderTimeTextView.setText(dateFormat.format("HH:mm", mTask.getAlarms().get(0)));
+                mReminderDateTextView.setText(dateFormat.format("EEE, dd MMM yyyy", mTask.getReminder()));
+                mReminderTimeTextView.setText(dateFormat.format("HH:mm", mTask.getReminder()));
             } else {
                 mReminderDateTextView.setVisibility(View.INVISIBLE);
                 mReminderTimeTextView.setVisibility(View.INVISIBLE);

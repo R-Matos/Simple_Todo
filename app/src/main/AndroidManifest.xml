@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.example.rmatos.simpletodo">
 
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>                     <!-- TODO: Implement alarm manager that works when phone restarted -->
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -21,7 +24,16 @@
         <activity
             android:name=".TaskPagerActivity"
             android:parentActivityName=".TaskListActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.SET_ALARM" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
 
+            <receiver
+                android:process=":remote"
+                android:name="AlarmReceiver"
+                android:enabled="true"
+                android:exported="true"/>
         </activity>
 
 

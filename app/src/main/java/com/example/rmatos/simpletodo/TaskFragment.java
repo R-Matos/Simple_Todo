@@ -1,8 +1,11 @@
 package com.example.rmatos.simpletodo;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,19 +13,20 @@ import android.support.v7.app.AppCompatDelegate;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import org.w3c.dom.Text;
 
 import java.util.Date;
 import java.util.UUID;
+
+import static android.content.Context.ALARM_SERVICE;
 
 /**
  * Created by RMatos on 05/08/2017.
@@ -80,6 +84,24 @@ public class TaskFragment extends Fragment {
     public void onPause() {
         super.onPause();
 
+        //Creates alarm/notification
+        if (mReminderTimeField.getText() != null && mReminderDateField.getText() != null) {
+
+            Intent intent = new Intent(getContext(), AlarmReceiver.class);
+            intent.putExtra("time", mTask.getReminder().getTime());
+
+            PendingIntent alarmIntent = PendingIntent.getBroadcast(getContext(), 10, intent, 0);
+
+            AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(getContext().ALARM_SERVICE);
+            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + 5 * 60 * 1000, alarmIntent);
+
+            Log.i("Pending AlarmIntent", "Created");
+        } else {
+            mTask.setReminder(null);
+            mTask.setReminderType(Task.ReminderType.NONE);
+        }
+
+        //Saves Task
         TaskStore.get(getActivity()).updateTask(mTask);
     }
 
@@ -143,24 +165,47 @@ public class TaskFragment extends Fragment {
         });
 
         mReminderDateField = (TextView) view.findViewById(R.id.task_reminder_date);
-        if (!mTask.getAlarms().isEmpty())
-            mReminderDateField.setText(dateFormat.format(DATE_FORMAT_DATE, mTask.getAlarms().get(0)));
+        if (mTask.getReminder() != null)
+            mReminderDateField.setText(dateFormat.format(DATE_FORMAT_DATE, mTask.getReminder()));
         mReminderDateField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Cancels previous alarm
+                if (mReminderDateField != null && mReminderTimeField != null) {
+                    //TODO: Cancel Alarm
+                }
+
                 createDatePicker(mTask.getDueDate(), REQUEST_REMINDER_DATE);
+
+                //Cancels previous alarm
+                if (mReminderDateField != null && mReminderTimeField != null) {
+                    //TODO: Set alarm
+                }
+
             }
         });
 
         mReminderTimeField = (TextView) view.findViewById(R.id.task_reminder_time);
-        if (!mTask.getAlarms().isEmpty())
-            mReminderTimeField.setText(dateFormat.format(DATE_FORMAT_TIME, mTask.getAlarms().get(0)));
+        if (mTask.getReminder() != null)
+            mReminderTimeField.setText(dateFormat.format(DATE_FORMAT_TIME, mTask.getReminder()));
         else
             mReminderTimeField.setVisibility(View.GONE);
         mReminderTimeField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createTimePicker(mTask.getAlarms().get(0), REQUEST_REMINDER_TIME);
+                //Cancels previous alarm
+                if (mReminderDateField != null && mReminderTimeField != null) {
+                    //TODO: Cancel Alarm
+                }
+
+                createTimePicker(mTask.getReminder(), REQUEST_REMINDER_TIME);
+
+                //Cancels previous alarm
+                if (mReminderDateField != null && mReminderTimeField != null) {
+                    //TODO: Set alarm
+
+                }
+
             }
         });
 
@@ -233,7 +278,7 @@ public class TaskFragment extends Fragment {
         else if (requestCode == REQUEST_REMINDER_DATE)
         {
             Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
-            mTask.addAlarm(date);
+            mTask.setReminder(date);
             mReminderDateField.setText(dateFormat.format(DATE_FORMAT_DATE, date));
             mReminderTimeField.setVisibility(View.VISIBLE);
             mReminderTypeImageView.setVisibility(View.VISIBLE);
@@ -245,7 +290,7 @@ public class TaskFragment extends Fragment {
         else if (requestCode == REQUEST_REMINDER_TIME)
         {
             Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
-            mTask.setAlarms(date);
+            mTask.setReminder(date);
             mReminderTimeField.setText(dateFormat.format(DATE_FORMAT_TIME, date));
         }
 

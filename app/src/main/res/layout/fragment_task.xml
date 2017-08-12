@@ -17,27 +17,33 @@
             style="?android:listSeparatorTextViewStyle"
             android:text="@string/task_label_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimaryDark"/>
         <EditText
             android:id="@+id/task_title"
             android:hint="@string/task_hint_title"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"/>
         <!--Title End-->
 
         <!--Notes Start-->
         <TextView
+            android:id="@+id/textView"
             style="?android:listSeparatorTextViewStyle"
-            android:text="@string/task_label_notes"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="@string/task_label_notes"
+            android:textColor="@color/colorPrimaryDark"/>
+
         <EditText
             android:id="@+id/task_notes"
             android:hint="@string/task_hint_notes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textMultiLine"
-            android:ems="10"/>
+            android:ems="10"
+            android:layout_marginBottom="10dp"/>
         <!--Notes End-->
 
         <!--DueDate Start-->
@@ -45,48 +51,76 @@
             style="?android:listSeparatorTextViewStyle"
             android:text="@string/task_label_duedate"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:id="@+id/task_dueDate"
-            android:hint="@string/task_hint_duedate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <!--DueDate End-->
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimaryDark"/>
 
-        <!--DueTime Start (visibility gone until dueDate is set)-->
-        <TextView
-            android:id="@+id/task_dueTime"
-            android:hint="Select due time"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="32dp"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/task_dueDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/task_hint_duedate"
+                android:textSize="14dp"
+                android:textColor="@android:color/black"
+                android:layout_weight="1"/>
+            <!--DueDate End-->
+
+            <!--DueTime Start (visibility gone until dueDate is set)-->
+            <TextView
+                android:id="@+id/task_dueTime"
+                android:hint="Select due time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:textColor="@android:color/black"
+                android:layout_weight="2"/>
+
+
+        </LinearLayout>
+
         <!--DueTime End-->
 
         <!--Reminders Start-->
         <TextView
+            android:id="@+id/textView2"
             style="?android:listSeparatorTextViewStyle"
-            android:text="@string/task_label_reminders"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="@string/task_label_reminders"
+            android:textColor="@color/colorPrimaryDark"/>
 
         <LinearLayout
             android:id="@+id/task_linear_reminder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center">
 
             <!-- Date -->
             <TextView
                 android:id="@+id/task_reminder_date"
                 android:hint="@string/task_reminder_date"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14dp"
+                android:textColor="@android:color/black"/>
 
             <!-- Time -->
             <TextView
                 android:id="@+id/task_reminder_time"
                 android:hint="Select time"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="14dp"
+                android:textColor="@android:color/black"/>
 
             <!-- Alarm/Notification -->
             <ImageView
@@ -96,7 +130,8 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginBottom="8dp"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:layout_weight="1"/>
 
         </LinearLayout>
         <!--Reminders End-->

@@ -29,7 +29,7 @@ public class TaskBaseHelper extends SQLiteOpenHelper {
                 TaskTable.Cols.NOTE + ", " +
                 TaskTable.Cols.DUE_DATE + ", " +
                 TaskTable.Cols.REMINDER_TYPE + ", " +
-                TaskTable.Cols.ALARMS + ", " +
+                TaskTable.Cols.REMINDER_DATE + ", " +
                 TaskTable.Cols.LAST_EDITED +
                 ");"
         );
