@@ -1,8 +1,11 @@
-package com.example.rmatos.simpletodo;
+package com.example.rmatos.simpletodo.fragments;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,18 +13,24 @@ import android.support.v7.app.AppCompatDelegate;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.text.format.Time;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
-import org.w3c.dom.Text;
+import com.example.rmatos.simpletodo.R;
+import com.example.rmatos.simpletodo.Task;
+import com.example.rmatos.simpletodo.TaskStore;
+import com.example.rmatos.simpletodo.receivers.AlarmReceiver;
+import com.example.rmatos.simpletodo.receivers.NotificationReceiver;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -49,6 +58,7 @@ public class TaskFragment extends Fragment {
     private TextView mReminderDateField;
     private TextView mReminderTimeField;
     private ImageView mReminderTypeImageView;
+    private ImageView mReminderDeleteImageView;
 
     //Returns this fragment to be created by another acitivty.
     //Ensures any activity can call this fragment
@@ -81,6 +91,18 @@ public class TaskFragment extends Fragment {
         super.onPause();
 
         TaskStore.get(getActivity()).updateTask(mTask);
+
+        Log.e("Date", "DATE"+String.valueOf(mReminderDateField.getText()));
+        Log.e("Time", "TIME"+String.valueOf(mReminderTimeField.getText()));
+
+        if (mReminderDateField.getText() != null && mReminderTimeField.getText() != null) {
+
+            if (mTask.getReminderType() == Task.ReminderType.ALARM) {
+                AlarmReceiver.setAlarms(getContext());
+            } else if (mTask.getReminderType() == Task.ReminderType.NOTIFICATION) {
+                NotificationReceiver.setNotifications(getContext());
+            }
+        }
     }
 
     @Nullable
@@ -143,8 +165,8 @@ public class TaskFragment extends Fragment {
         });
 
         mReminderDateField = (TextView) view.findViewById(R.id.task_reminder_date);
-        if (!mTask.getAlarms().isEmpty())
-            mReminderDateField.setText(dateFormat.format(DATE_FORMAT_DATE, mTask.getAlarms().get(0)));
+        if (mTask.getReminder() != null)
+            mReminderDateField.setText(dateFormat.format(DATE_FORMAT_DATE, mTask.getReminder()));
         mReminderDateField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -153,14 +175,14 @@ public class TaskFragment extends Fragment {
         });
 
         mReminderTimeField = (TextView) view.findViewById(R.id.task_reminder_time);
-        if (!mTask.getAlarms().isEmpty())
-            mReminderTimeField.setText(dateFormat.format(DATE_FORMAT_TIME, mTask.getAlarms().get(0)));
+        if (mTask.getReminder() != null && !(mTask.getReminder().getHours() == 0 && mTask.getReminder().getMinutes() == 0))
+            mReminderTimeField.setText(dateFormat.format(DATE_FORMAT_TIME, mTask.getReminder()));
         else
             mReminderTimeField.setVisibility(View.GONE);
         mReminderTimeField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createTimePicker(mTask.getAlarms().get(0), REQUEST_REMINDER_TIME);
+                createTimePicker(mTask.getReminder(), REQUEST_REMINDER_TIME);
             }
         });
 
@@ -184,6 +206,26 @@ public class TaskFragment extends Fragment {
                 }
             }
         });
+
+        mReminderDeleteImageView = (ImageView) view.findViewById(R.id.task_reminder_delete);
+        if (mReminderTimeField.getVisibility() == View.VISIBLE) {
+            mReminderDeleteImageView.setVisibility(View.VISIBLE);
+        } else {
+            mReminderDeleteImageView.setVisibility(View.GONE);
+        }
+        mReminderDeleteImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mReminderDateField.setText(null);
+                mReminderTimeField.setText(null);
+                mReminderTimeField.setVisibility(View.GONE);
+                mReminderTypeImageView.setVisibility(View.GONE);
+                mReminderDeleteImageView.setVisibility(View.GONE);
+                mTask.setReminder(null);
+                mTask.setReminderType(Task.ReminderType.NONE);
+            }
+        });
+
 
 
         return view;
@@ -233,10 +275,11 @@ public class TaskFragment extends Fragment {
         else if (requestCode == REQUEST_REMINDER_DATE)
         {
             Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
-            mTask.addAlarm(date);
+            mTask.setReminder(date);
             mReminderDateField.setText(dateFormat.format(DATE_FORMAT_DATE, date));
             mReminderTimeField.setVisibility(View.VISIBLE);
             mReminderTypeImageView.setVisibility(View.VISIBLE);
+            mReminderDeleteImageView.setVisibility(View.VISIBLE);
             if (mTask.getReminderType() == Task.ReminderType.NONE) {
                 mReminderTypeImageView.setImageResource(R.drawable.ic_notification);
                 mTask.setReminderType(Task.ReminderType.NOTIFICATION);
@@ -245,7 +288,7 @@ public class TaskFragment extends Fragment {
         else if (requestCode == REQUEST_REMINDER_TIME)
         {
             Date date = (Date) data.getSerializableExtra(TimePickerFragment.EXTRA_TIME);
-            mTask.setAlarms(date);
+            mTask.setReminder(date);
             mReminderTimeField.setText(dateFormat.format(DATE_FORMAT_TIME, date));
         }
 

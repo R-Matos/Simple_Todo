@@ -1,7 +1,10 @@
-package com.example.rmatos.simpletodo;
+package com.example.rmatos.simpletodo.fragments;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +20,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.example.rmatos.simpletodo.R;
+import com.example.rmatos.simpletodo.Task;
+import com.example.rmatos.simpletodo.activities.TaskPagerActivity;
+import com.example.rmatos.simpletodo.TaskStore;
+import com.example.rmatos.simpletodo.receivers.AlarmReceiver;
 
 import java.util.List;
 
@@ -90,8 +98,6 @@ public class TaskListFragment extends Fragment {
     }
 
     //Handles menu events
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -102,6 +108,7 @@ public class TaskListFragment extends Fragment {
                 startActivity(intent);
                 return true;
             case R.id.list_menu_show_count:
+                mSubtitleVisible = (!mSubtitleVisible);
                 updateSubtitle();
                 return true;
             default:
@@ -155,6 +162,8 @@ public class TaskListFragment extends Fragment {
      * Viewholder
      */
     private class TaskHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private final int NOTE_LIMIT = 30;
+
         private Task mTask;
 
         private TextView mTitleTextView;
@@ -183,7 +192,8 @@ public class TaskListFragment extends Fragment {
             mTitleTextView.setText(task.getTitle());
             if (mTask.getNote() != null) {
                 mNoteTextView.setVisibility(View.VISIBLE);
-                mNoteTextView.setText(task.getNote());
+                mNoteTextView.setText((task.getNote().length() > NOTE_LIMIT) ?
+                        task.getNote().substring(0,NOTE_LIMIT) : task.getNote());
             } else {
                 mNoteTextView.setVisibility(View.INVISIBLE);
             }
@@ -193,11 +203,11 @@ public class TaskListFragment extends Fragment {
             } else {
                 mDueDateTextView.setVisibility(View.INVISIBLE);
             }
-            if (!mTask.getAlarms().isEmpty()) {
+            if (mTask.getReminder() != null) {
                 mReminderDateTextView.setVisibility(View.VISIBLE);
                 mReminderTimeTextView.setVisibility(View.VISIBLE);
-                mReminderDateTextView.setText(dateFormat.format("EEE, dd MMM yyyy", mTask.getAlarms().get(0)));
-                mReminderTimeTextView.setText(dateFormat.format("HH:mm", mTask.getAlarms().get(0)));
+                mReminderDateTextView.setText(dateFormat.format("EEE, dd MMM yyyy", mTask.getReminder()));
+                mReminderTimeTextView.setText(dateFormat.format("HH:mm", mTask.getReminder()));
             } else {
                 mReminderDateTextView.setVisibility(View.INVISIBLE);
                 mReminderTimeTextView.setVisibility(View.INVISIBLE);

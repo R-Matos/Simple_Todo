@@ -2,6 +2,7 @@ package com.example.rmatos.simpletodo;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -16,7 +17,9 @@ public class Task {
     private Date dueDate;
     private ReminderType reminderType;
     private Date lastEdited;
-    private ArrayList<Date> alarms = new ArrayList<Date>();
+    private Date reminder;
+    private int alarmID;
+
 
     public enum ReminderType {
         NONE,
@@ -30,10 +33,13 @@ public class Task {
     }
 
     public Task(UUID id) {
-        mID = id;
-        mNote = null;
-        lastEdited = new Date();
-        reminderType = ReminderType.NONE;
+        this.mID = id;
+        this.mNote = null;
+        this.lastEdited = new Date();
+        this.reminderType = ReminderType.NONE;
+
+        Random rand = new Random();
+        this.alarmID = rand.nextInt(2147483645) + 1;
     }
 
     public UUID getID()                                 { return mID; }
@@ -41,13 +47,14 @@ public class Task {
     public void setTitle(String title)                  { this.mTitle = title; }
     public String getNote()                             { return mNote; }
     public void setNote(String note)                    { this.mNote = note; }
-    public ArrayList<Date> getAlarms()                  { return alarms; }
     public Date getLastEditted()                        { return lastEdited; }
     public void setLastEditted(Date lastEditted)        { this.lastEdited = lastEditted; }
     public Date getDueDate()                            { return dueDate; }
     public void setDueDate(Date dueDate)                { this.dueDate = dueDate; }
     public ReminderType getReminderType()               { return reminderType; }
-    public void addAlarm(Date date)                     { alarms.add(date); }
+    public Date getReminder()                           { return reminder; }
+    public void setReminder(Date reminder)              { this.reminder = reminder; }
+    public void setAlarmID(int alarmID)                 { this.alarmID = alarmID; }
+    public int getAlarmID()                             { return alarmID; }
     public void setReminderType(ReminderType reminderType) { this.reminderType = reminderType; }
-    public void setAlarms(Date date) { alarms.remove(0); alarms.add(date); }                        //TODO: Replace with multiple alarms
 }

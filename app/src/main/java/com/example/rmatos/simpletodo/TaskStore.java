@@ -63,6 +63,24 @@ public class TaskStore {
         return tasks;
     }
 
+    public List<Task> getTasksWithAlarms() {
+        List<Task> tasks = new ArrayList<>();
+
+        TaskCursorWrapper cursor = queryTasks("reminder_type != ?", new String[] { "NONE" });
+
+        try {
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                tasks.add(cursor.getTask());
+                cursor.moveToNext();
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return tasks;
+    }
+
     //Retrieval of a single row from SQL
     public Task getTask(UUID id) {
 
@@ -110,6 +128,7 @@ public class TaskStore {
     private static ContentValues getContentValues(Task task) {
         long dueDate = (task.getDueDate() == null) ? 0 : task.getDueDate().getTime();
         long lastEdited = (task.getLastEditted() == null) ? 0 : task.getLastEditted().getTime();
+        long reminder = (task.getReminder() == null) ? 0 : task.getReminder().getTime();
 
         ContentValues values = new ContentValues();
         values.put(TaskTable.Cols.UUID, task.getID().toString());
@@ -117,8 +136,9 @@ public class TaskStore {
         values.put(TaskTable.Cols.NOTE, task.getNote());
         values.put(TaskTable.Cols.DUE_DATE, dueDate);
         values.put(TaskTable.Cols.REMINDER_TYPE, task.getReminderType().name());
-        values.put(TaskTable.Cols.ALARMS, 0);
+        values.put(TaskTable.Cols.REMINDER_DATE, reminder);
         values.put(TaskTable.Cols.LAST_EDITED, lastEdited);
+        values.put(TaskTable.Cols.ALARM_ID, task.getAlarmID());
 
         return values;
     }
