@@ -15,12 +15,13 @@ import android.support.v4.app.NotificationCompat;
 import com.example.rmatos.simpletodo.R;
 import com.example.rmatos.simpletodo.Task;
 import com.example.rmatos.simpletodo.TaskStore;
+import com.example.rmatos.simpletodo.activities.TaskListActivity;
 import com.example.rmatos.simpletodo.activities.TaskPagerActivity;
 
 import java.util.Date;
 import java.util.List;
 
-/**
+/**asda
  * Created by RMatos on 22/08/2017.
  */
 
@@ -34,7 +35,8 @@ public class NotificationReceiver extends BroadcastReceiver{
 
         for (Task task : tasks) {
 
-            if (task.getReminderType() == Task.ReminderType.NOTIFICATION) {
+            if (task.getReminderType() == Task.ReminderType.NOTIFICATION)
+            {
                 final long difference = Long.valueOf(new Date().getTime() - SystemClock.elapsedRealtime());     //AlarmManager time is based on SystemClock.elapsedRealtime not Date
                 long alarmTime = task.getReminder().getTime() - difference;
 
@@ -43,7 +45,16 @@ public class NotificationReceiver extends BroadcastReceiver{
                 alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, alarmTime, alarmIntent);
             }
         }
+    }
 
+    static public void cancelAlarm(Context context, Task task) {
+
+        //Creates identical intents to cancel alarm
+        Intent intent = new Intent(context, NotificationReceiver.class);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, task.getAlarmID(), intent, PendingIntent.FLAG_ONE_SHOT);
+
+        AlarmManager alarmManager = (AlarmManager)context.getSystemService(context.ALARM_SERVICE);
+        alarmManager.cancel(alarmIntent);
     }
 
     @Override
@@ -51,6 +62,7 @@ public class NotificationReceiver extends BroadcastReceiver{
 
         displayNotification(context);
         playSound(context);
+        startApp(context);
 
     }
 
@@ -91,5 +103,18 @@ public class NotificationReceiver extends BroadcastReceiver{
         };
         timer.start();
     }
+
+    private void startApp(Context context) {
+        final long DELAY_IN_MILLIS = 1000 + System.currentTimeMillis();
+
+        Intent intent = new Intent(context, TaskListActivity.class);
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 10, intent, 0);
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC, DELAY_IN_MILLIS,pendingIntent);
+    }
+
 
 }

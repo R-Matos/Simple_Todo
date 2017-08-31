@@ -101,6 +101,8 @@ public class TaskStore {
         }
     }
 
+
+
     public void updateTask(Task task) {
         String uuidString = task.getID().toString();
         ContentValues values = getContentValues(task);

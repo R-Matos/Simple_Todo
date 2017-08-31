@@ -92,9 +92,6 @@ public class TaskFragment extends Fragment {
 
         TaskStore.get(getActivity()).updateTask(mTask);
 
-        Log.e("Date", "DATE"+String.valueOf(mReminderDateField.getText()));
-        Log.e("Time", "TIME"+String.valueOf(mReminderTimeField.getText()));
-
         if (mReminderDateField.getText() != null && mReminderTimeField.getText() != null) {
 
             if (mTask.getReminderType() == Task.ReminderType.ALARM) {
@@ -102,6 +99,14 @@ public class TaskFragment extends Fragment {
             } else if (mTask.getReminderType() == Task.ReminderType.NOTIFICATION) {
                 NotificationReceiver.setNotifications(getContext());
             }
+        } else {
+            if (mTask.getReminderType() == Task.ReminderType.ALARM)
+                AlarmReceiver.cancelAlarm(getContext(), mTask);
+            else if (mTask.getReminderType() == Task.ReminderType.NOTIFICATION)
+                NotificationReceiver.cancelAlarm(getContext(), mTask);
+
+            mTask.setReminder(null);
+            mTask.setReminderType(Task.ReminderType.NONE);
         }
     }
 
@@ -223,6 +228,8 @@ public class TaskFragment extends Fragment {
                 mReminderDeleteImageView.setVisibility(View.GONE);
                 mTask.setReminder(null);
                 mTask.setReminderType(Task.ReminderType.NONE);
+                AlarmReceiver.cancelAlarm(getContext(), mTask);
+                NotificationReceiver.cancelAlarm(getContext(), mTask);
             }
         });
 

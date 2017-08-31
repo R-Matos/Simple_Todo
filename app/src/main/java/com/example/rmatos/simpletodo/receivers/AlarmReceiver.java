@@ -49,33 +49,17 @@ public class AlarmReceiver extends BroadcastReceiver {
                 alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, alarmTime, alarmIntent);
 
             }
-            //If notification is set
-            else if (task.getReminderType() == Task.ReminderType.NOTIFICATION)
-            {
-                NotificationCompat.Builder mBuilder =
-                        new NotificationCompat.Builder(context)
-                                .setSmallIcon(R.drawable.ic_notification)
-                                .setContentTitle("My notification")
-                                .setContentText("Hello World!");
-
-                Intent resultIntent = new Intent(context, TaskPagerActivity.class);
-                PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                mBuilder.setContentIntent(resultPendingIntent);
-
-                // Sets an ID for the notification
-                int mNotificationId = 001;
-                // Gets an instance of the NotificationManager service
-                NotificationManager mNotifyMgr = (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
-                // Builds the notification and issues it.
-                mNotifyMgr.notify(mNotificationId, mBuilder.build());
-
-            }
-
-
-
         }
+    }
 
+    static public void cancelAlarm(Context context, Task task) {
+
+        //Creates identical intents to cancel alarm
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, task.getAlarmID(), intent, PendingIntent.FLAG_ONE_SHOT);
+
+        AlarmManager alarmManager = (AlarmManager)context.getSystemService(context.ALARM_SERVICE);
+        alarmManager.cancel(alarmIntent);
     }
 
 
@@ -85,6 +69,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         playAlarm(context);
         startApp(context);
     }
+
 
     private void playAlarm(Context context) {
 
@@ -117,5 +102,26 @@ public class AlarmReceiver extends BroadcastReceiver {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC, DELAY_IN_MILLIS,pendingIntent);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
